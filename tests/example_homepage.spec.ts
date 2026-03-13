@@ -1,11 +1,12 @@
 import { test, expect } from "@playwright/test";
 
 test.describe ('TS1: Example Web KaneKane Blog', () => {
+    // beforeEach เฉพาะ describe นี้ -> goto หน้าแรกเสมอ
     test.beforeEach (async ({ page}) => {
         await page.goto('https://kanexkane.com/');
     });
 
-    test('TC01: ทกสอบการค้นหาบทความ', async ({ page }) => {
+    test('TC01: ทดสอบการค้นหาบทความ', async ({ page }) => {
         await test.step('Step 1: กดปุ่มค้นหา',async () => {
             //ค้นหา element ที่อยู่ใน div และไม่มีตัวที่สามารถตรวจจับได้ เช่น id, data-textid
             await page.locator('div.desk-header a.msearch').click();
@@ -30,6 +31,16 @@ test.describe ('TS1: Example Web KaneKane Blog', () => {
             */
             await expect (page).toHaveURL('https://kanexkane.com/?s=blazor');
             await expect (page.getByRole('heading', { name: 'Search Results for:'})).toContainText('blazor');
+        });
+    });
+
+    test('TC02: ค้นหาบทความที่มี tag ว่า blazor', async ({ page }) => {
+        await page.goto('https://kanexkane.com/?s=blazor');
+        await test.step('Step 1: ไปที่ช่องค้นหา tags', async () => {
+            await page.getByRole('heading', {name: 'Tags'}).hover();
+        });
+        await test.step('Step 2: กดค้นหาที่ช่อง blazor', async () => {
+            await page.locator('//a[@class="tag-cloud-link tag-link-160 tag-link-position-2" and text() = "blazor"]').click();
         });
     });
 });
