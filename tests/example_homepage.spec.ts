@@ -44,3 +44,32 @@ test.describe ('TS1: Example Web KaneKane Blog', () => {
         });
     });
 });
+
+
+    test.describe('TS-01: test page blog', () => {
+        test.beforeEach(async ({ page }) => {
+            await page.goto('https://kanexkane.com/');
+        });
+        test('TC-001: test search',async ({ page }) => {
+            await test.step('step 1: click search', async () => {
+                await page.locator('div.desk-header a.msearch').click();
+            });
+            await test.step('step 2: show pupup search', async () => {
+                await expect(page.getByPlaceholder('ค้นหา …')).toBeVisible();
+            });
+            await test.step('step 3: input text', async () => {
+                await page.getByPlaceholder('ค้นหา …').fill('blazor');
+            });
+            await test.step('step 4: show text', async () => {
+                await expect(page.getByPlaceholder('ค้นหา …')).toHaveValue('blazor');
+            });
+            await test.step('step 5: click search', async () => {
+                //await page.locator('input.search-submit').click();
+                await page.getByRole('button', {name: 'ค้นหา'}).click();
+            });
+            await test.step('step 6: show page', async () => {
+                await expect(page).toHaveURL('https://kanexkane.com/?s=blazor');
+                await expect(page.getByRole('heading', {name: 'Search Results for:', exact: false })).toContainText('blazor');
+            });
+        });
+    });
